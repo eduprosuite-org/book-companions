@@ -1,0 +1,1 @@
+Place your book cover here as math-into-latex.jpg
