@@ -1,0 +1,5 @@
+PyYAML
+pandas
+jinja2
+markdown
+GitPython
