@@ -1,4 +1,4 @@
-name: Build Book Companions
+name: Test All Milestones
 
 on:
   push:
@@ -8,8 +8,18 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  test-milestones:
     runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        milestone:
+          - book-companions-milestone1
+          - book-companions-milestone2
+          - book-companions-milestone3
+          - book-companions-milestone4
+          - book-companions-milestone5
 
     steps:
       - name: Checkout Repository
@@ -20,36 +30,27 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Show Python Version
-        run: python --version
-
-      - name: Show Repository Structure
+      - name: Show Current Milestone
         run: |
-          pwd
-          ls -R
+          echo "======================================"
+          echo "Testing ${{ matrix.milestone }}"
+          echo "======================================"
 
-      - name: Check Engine Folder
+      - name: Verify publish.py exists
         run: |
-          if [ -d "engine" ]; then
-            echo "✅ engine folder found"
+          if [ -f "${{ matrix.milestone }}/engine/publish.py" ]; then
+            echo "publish.py found"
           else
-            echo "❌ engine folder not found"
-          fi
-
-      - name: Check Publish Script
-        run: |
-          if [ -f "engine/publish.py" ]; then
-            echo "✅ publish.py found"
-          else
-            echo "❌ publish.py NOT found"
+            echo "ERROR: publish.py NOT found"
             exit 1
           fi
 
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pyyaml markdown || true
+          pip install pyyaml markdown
 
       - name: Run Publish Script
+        working-directory: ${{ matrix.milestone }}
         run: |
           python engine/publish.py
