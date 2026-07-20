@@ -1,0 +1,55 @@
+name: Build Book Companions
+
+on:
+  push:
+    branches:
+      - fullsetup-platform-v2
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Show Python Version
+        run: python --version
+
+      - name: Show Repository Structure
+        run: |
+          pwd
+          ls -R
+
+      - name: Check Engine Folder
+        run: |
+          if [ -d "engine" ]; then
+            echo "✅ engine folder found"
+          else
+            echo "❌ engine folder not found"
+          fi
+
+      - name: Check Publish Script
+        run: |
+          if [ -f "engine/publish.py" ]; then
+            echo "✅ publish.py found"
+          else
+            echo "❌ publish.py NOT found"
+            exit 1
+          fi
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml markdown || true
+
+      - name: Run Publish Script
+        run: |
+          python engine/publish.py
