@@ -1,6 +1,6 @@
 from pathlib import Path
 import csv
-from engine.navigation import build_nav
+from navigation import build_nav
 books=list(csv.DictReader(open('knowledge_graph/Books.csv',encoding='utf-8')))
 site=Path('website');site.mkdir(exist_ok=True)
 links=[]
